@@ -1,0 +1,897 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #212b32;
+  min-height: 100%;
+  background: #aeb7bd;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+/* ── App shell — centred, max-width on desktop ── */
+.iphone-frame {
+  position: relative;
+  width: 420px;
+  height: 860px;
+  border: 12px solid #1b1b1b;
+  border-radius: 54px;
+  box-shadow: 0 0 0 1px #3a3a3a, 0 2px 8px rgba(2,8,20,.2), 0 8px 24px rgba(2,8,20,.2);
+  overflow: hidden;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.iphone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 219px;
+  height: 31px;
+  background: #1b1b1b;
+  border-radius: 0 0 18px 18px;
+  z-index: 100;
+}
+
+.app-shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  padding-top: 31px; /* space for notch */
+}
+
+/* ── NHS App header ── */
+.app-hdr {
+  background: #f0f4f5;
+  flex-shrink: 0;
+}
+
+.app-hdr__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+.app-hdr__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #212b32;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.app-hdr__home-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #212b32;
+}
+
+.app-hdr__help {
+  background: none;
+  border: 2px solid #d5dce0;
+  border-radius: 10px;
+  color: #005eb8;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.nhs-logo-mark {
+  display: inline-block;
+  background: #005eb8;
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+  padding: 3px 6px;
+  letter-spacing: 2px;
+  line-height: 1.3;
+  font-family: Arial, sans-serif;
+}
+
+/* ── Home page ── */
+.nhs-home-body {
+  background: #edf4f5;
+  flex: 1;
+  padding: 20px 16px 24px;
+  overflow-y: auto;
+}
+
+.nhs-home-title {
+  color: #25313a;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Stacked service cards */
+.nhsapp-cards {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.nhsapp-cards--stacked .nhsapp-card {
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.nhsapp-cards--stacked .nhsapp-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: #d8dde0;
+}
+
+.nhsapp-cards--stacked .nhsapp-card:first-of-type {
+  border-top: 1px solid #d8dde0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.nhsapp-cards--stacked .nhsapp-card:last-of-type {
+  border-bottom: 1px solid #d8dde0;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.nhsapp-cards--stacked .nhsapp-card:last-of-type::after {
+  display: none;
+}
+
+.nhsapp-card {
+  background: #fff;
+  border: 1px solid #d8dde0;
+  border-radius: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.nhsapp-card__container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px;
+  min-height: 56px;
+}
+
+.nhsapp-card__link {
+  color: #005eb8;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.32;
+  text-decoration: none;
+  flex: 1;
+  display: block;
+}
+
+.nhsapp-card__link::after {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.nhsapp-card__link:hover,
+.nhsapp-card__link:visited {
+  color: #005eb8;
+}
+
+.nhsapp-chevron {
+  fill: #005eb8;
+  flex-shrink: 0;
+}
+
+/* Ask the NHS editorial card */
+.nhsapp-editorial-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d8dde0;
+  border-radius: 8px;
+  color: #4c6272;
+  gap: 12px;
+  margin: 0 0 32px;
+  min-height: 56px;
+  padding: 15px 20px;
+  text-decoration: none;
+  position: relative;
+}
+
+.nhsapp-editorial-card:visited,
+.nhsapp-editorial-card:hover {
+  color: #4c6272;
+}
+
+.nhsapp-editorial-body {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.nhsapp-editorial-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #ccdff1;
+  border-radius: 2px;
+  color: #00386e;
+  font-size: 14px;
+  font-weight: 400;
+  justify-self: start;
+  padding: 4px 10px;
+  letter-spacing: 0.35px;
+  line-height: 20px;
+}
+
+.nhsapp-editorial-title {
+  color: #005eb8;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.32;
+  margin: 0;
+}
+
+.nhsapp-editorial-copy {
+  color: #4c6272;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.nhsapp-editorial-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: #005eb8;
+  flex-shrink: 0;
+}
+
+/* NHS information section heading */
+.nhsapp-section-heading {
+  color: #25313a;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 12px;
+  padding-top: 8px;
+}
+
+/* (ask-card replaced by nhsapp-editorial-card above) */
+
+/* ── Bottom navigation ── */
+.nhs-bottom-nav {
+  flex-shrink: 0;
+  background: #005eb8;
+  display: flex;
+  padding: 8px 0 env(safe-area-inset-bottom, 20px);
+}
+
+.nhs-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 0 0;
+}
+
+.nhs-bottom-nav__item svg { fill: rgba(255, 255, 255, 0.7); }
+
+.nhs-bottom-nav__item.active { color: #fff; }
+.nhs-bottom-nav__item.active svg { fill: #fff; }
+
+.nhs-bottom-nav__label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.nhs-bottom-nav__item.active .nhs-bottom-nav__label { font-weight: 700; }
+
+/* ── Inner page (ask / results) ── */
+.nhs-inner-body {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.nhs-inner-back {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f4f5;
+  flex-shrink: 0;
+}
+
+.nhs-back-link {
+  color: #005eb8;
+  text-decoration: none;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.nhs-back-link::before { content: '‹'; font-size: 20px; line-height: 1; }
+.nhs-back-link:hover { text-decoration: underline; }
+
+.nhs-inner-content { padding: 24px 16px; flex: 1; }
+
+/* ── Typography ── */
+.nhs-page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.nhs-hint {
+  font-size: 15px;
+  color: #4c6272;
+  margin-bottom: 12px;
+}
+
+/* ── Form ── */
+.nhs-form-group { margin: 20px 0 24px; }
+
+.nhs-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.nhs-error-msg {
+  display: block;
+  color: #d5281b;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.nhs-textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  border: 2px solid #4c6272;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 96px;
+  color: #212b32;
+  background: #fff;
+}
+.nhs-textarea:focus {
+  outline: 3px solid #ffb81c;
+  outline-offset: 0;
+  border-color: #212b32;
+}
+.nhs-textarea--error { border-color: #d5281b; }
+
+/* Single-line input (password page) */
+.nhs-input {
+  padding: 8px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  border: 2px solid #4c6272;
+  border-radius: 4px;
+  color: #212b32;
+  background: #fff;
+  flex: 1;
+  min-width: 0;
+}
+.nhs-input:focus {
+  outline: 3px solid #ffb81c;
+  outline-offset: 0;
+  border-color: #212b32;
+}
+.nhs-input--error { border-color: #d5281b; }
+
+/* Health A-Z search row */
+.nhs-search-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.nhs-search-btn {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+/* ── Password gate page ── */
+.pw-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  overflow-y: auto;
+}
+.pw-header {
+  background: #fff;
+  border-bottom: 4px solid #005eb8;
+  padding: 12px 20px;
+}
+.pw-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #212b32;
+}
+.pw-header__site { color: #212b32; }
+.pw-main {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 500px;
+}
+.pw-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.pw-desc {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+.pw-input-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+.pw-show-btn {
+  background: none;
+  border: 2px solid #4c6272;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  color: #005eb8;
+  white-space: nowrap;
+}
+.pw-show-btn:hover { background: #f0f4f5; }
+.pw-footer {
+  padding: 20px;
+  font-size: 14px;
+  color: #4c6272;
+  border-top: 1px solid #d8dde0;
+}
+
+/* ── Button ── */
+.nhs-button {
+  background: #007f3b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #00401e;
+  position: relative;
+  margin-bottom: 4px;
+}
+.nhs-button:hover { background: #00662f; }
+.nhs-button:active { box-shadow: none; top: 4px; }
+.nhs-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Error summary ── */
+.nhs-error-summary {
+  border: 4px solid #d5281b;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+}
+.nhs-error-summary h2 { font-size: 18px; margin-bottom: 8px; color: #d5281b; }
+
+/* ── Loading state ── */
+.nhs-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px 16px;
+  color: #4c6272;
+  font-size: 18px;
+}
+
+.nhs-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #d8dde0;
+  border-top-color: #005eb8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Results ── */
+.nhs-results-count {
+  font-size: 16px;
+  color: #4c6272;
+  margin-bottom: 24px;
+}
+
+.nhs-service-card {
+  border: 1px solid #d8dde0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.nhs-service-card__content { flex: 1; min-width: 0; }
+
+.nhs-service-card__badge {
+  display: inline-block;
+  background: #d3e8f4;
+  color: #005eb8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nhs-service-card__title {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #005eb8;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.nhs-service-card__title:hover { text-decoration: underline; }
+
+.nhs-service-card__desc {
+  font-size: 15px;
+  color: #212b32;
+  line-height: 1.4;
+}
+
+.nhs-service-card__arrow {
+  background: #003087;
+  color: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-weight: 300;
+}
+
+/* ── Link button ── */
+.nhs-link-btn {
+  color: #005eb8;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.nhs-link-btn:hover { color: #212b32; }
+
+.nhs-start-new { margin: 16px 0 24px; }
+
+/* ── NHS article markdown content ── */
+.nhs-card-expander { border-top: 1px solid #d8dde0; margin-top: 14px; }
+.nhs-card-expander summary { font-size: 14px; padding: 10px 0 0; }
+.nhs-article-body { margin-top: 12px; padding-top: 12px; border-top: 1px solid #d8dde0; }
+
+.nhs-markdown h1, .nhs-markdown h2, .nhs-markdown h3 {
+  font-size: 17px; font-weight: 700; margin: 14px 0 6px; color: #212b32;
+}
+.nhs-markdown p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+.nhs-markdown ul, .nhs-markdown ol { padding-left: 20px; margin-bottom: 10px; }
+.nhs-markdown li { font-size: 14px; line-height: 1.5; margin-bottom: 3px; }
+.nhs-markdown a { color: #005eb8; }
+.nhs-markdown strong { font-weight: 700; }
+.nhs-markdown hr { border: none; border-top: 1px solid #d8dde0; margin: 12px 0; }
+
+/* ── Expandable sections (details/summary) ── */
+.nhs-expander {
+  border-top: 1px solid #d8dde0;
+}
+
+.nhs-expander summary {
+  list-style: none;
+  padding: 14px 0;
+  font-size: 16px;
+  color: #005eb8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.nhs-expander summary::-webkit-details-marker { display: none; }
+.nhs-expander summary::after { content: '+'; font-size: 22px; font-weight: 300; line-height: 1; }
+.nhs-expander[open] summary::after { content: '−'; }
+
+.nhs-expander__body {
+  padding: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #212b32;
+}
+.nhs-expander__body a { color: #005eb8; }
+
+/* ── Find NHS Services ── */
+.sf-result-card {
+  border: 1px solid #d8dde0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.sf-result-card__header {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid #f0f4f5;
+  background: #f0f4f5;
+}
+
+/* clickable header variant */
+.sf-result-card__header--btn {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.sf-result-card__header--btn:hover { background: #e8eef0; }
+
+.sf-result-card__body {
+  padding: 14px 16px;
+}
+
+.sf-card-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.sf-address-inline {
+  font-size: 14px;
+  color: #4c6272;
+  flex: 1;
+}
+
+.sf-distance {
+  font-size: 13px;
+  color: #768692;
+  white-space: nowrap;
+}
+
+.sf-chevron {
+  font-size: 20px;
+  color: #005eb8;
+  font-weight: 300;
+  line-height: 1;
+  margin-left: auto;
+}
+
+.sf-card-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.sf-open-badge {
+  display: inline-block;
+  background: #00703c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sf-closed-badge {
+  display: inline-block;
+  background: #768692;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sf-org-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #212b32;
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+
+.sf-service-type {
+  font-size: 14px;
+  color: #4c6272;
+  margin: 0;
+}
+
+.sf-address {
+  font-size: 15px;
+  color: #212b32;
+  margin-bottom: 10px;
+}
+
+.sf-service-info {
+  font-size: 14px;
+  color: #4c6272;
+  margin-bottom: 10px;
+}
+
+.sf-detail-section {
+  margin-bottom: 4px;
+}
+
+.sf-detail-row {
+  font-size: 14px;
+  color: #212b32;
+  margin-bottom: 4px;
+}
+
+.sf-detail-label {
+  font-weight: 700;
+}
+
+.sf-contact-link {
+  color: #005eb8;
+  word-break: break-all;
+}
+
+.sf-times-expander {
+  margin-top: 8px;
+}
+
+.sf-times-expander summary {
+  font-size: 14px;
+  padding: 10px 0 0;
+}
+
+.sf-times-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.sf-times-day {
+  font-weight: 700;
+  width: 100px;
+  padding: 3px 8px 3px 0;
+  vertical-align: top;
+  color: #212b32;
+}
+
+.sf-times-hours {
+  color: #212b32;
+  padding: 3px 0;
+  vertical-align: top;
+}
+
+.sf-details {
+  padding: 14px 16px;
+  border-top: 1px solid #d8dde0;
+  background: #fff;
+}
+
+.sf-details__loading {
+  font-size: 14px;
+  color: #4c6272;
+}
+
+.sf-details__error {
+  font-size: 14px;
+  color: #d5281b;
+}
+
+.sf-contact-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sf-contact-item {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sf-contact-icon { font-size: 13px; }
+
+/* ── NHS Care Cards ── */
+.nhsapp-care-card {
+  margin: 0 0 20px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nhsapp-care-card__label-bar {
+  padding: 8px 14px;
+}
+
+.nhsapp-care-card__label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.nhsapp-care-card__body {
+  padding: 14px 14px 2px;
+  border: 2px solid;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  background: #fff;
+}
+
+.nhsapp-care-card--non-urgent .nhsapp-care-card__label-bar { background: #005eb8; }
+.nhsapp-care-card--non-urgent .nhsapp-care-card__label     { color: #fff; }
+.nhsapp-care-card--non-urgent .nhsapp-care-card__body      { border-color: #005eb8; }
+
+.nhsapp-care-card--urgent .nhsapp-care-card__label-bar,
+.nhsapp-care-card--immediate .nhsapp-care-card__label-bar  { background: #d5281b; }
+.nhsapp-care-card--urgent .nhsapp-care-card__label,
+.nhsapp-care-card--immediate .nhsapp-care-card__label      { color: #fff; }
+.nhsapp-care-card--urgent .nhsapp-care-card__body,
+.nhsapp-care-card--immediate .nhsapp-care-card__body       { border-color: #d5281b; }
+
+.nhsapp-care-card--warning .nhsapp-care-card__label-bar    { background: #ffb81c; }
+.nhsapp-care-card--warning .nhsapp-care-card__label        { color: #212b32; }
+.nhsapp-care-card--warning .nhsapp-care-card__body         { border-color: #ffb81c; }
+
+.nhsapp-care-card--info .nhsapp-care-card__label-bar       { background: #007f3b; }
+.nhsapp-care-card--info .nhsapp-care-card__label           { color: #fff; }
+.nhsapp-care-card--info .nhsapp-care-card__body            { border-color: #007f3b; background: #f0f4f5; }
