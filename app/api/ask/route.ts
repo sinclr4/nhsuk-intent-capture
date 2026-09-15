@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const ENDPOINT = process.env.AZURE_AI_ENDPOINT!;
 const API_KEY = process.env.AZURE_AI_API_KEY!;
-const AGENT_NAME = 'nhsuk-intent-capture';
-const AGENT_VERSION = '10';
+const AGENT_NAME = 'intent-capture';
+const AGENT_VERSION = '5';
 const BASE = `${ENDPOINT}/openai/v1`;
 const HEADERS = { 'Content-Type': 'application/json', 'api-key': API_KEY };
 const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
@@ -15,7 +15,15 @@ async function post(path: string, body: unknown) {
     const text = await res.text().catch(() => '(no body)');
     throw new Error(`POST ${url} → ${res.status}: ${text}`);
   }
-  return res.json() as Promise<Record<string, unknown>>;
+  const text = await res.text();
+  if (!text.trim()) {
+    throw new Error(`POST ${url} returned an empty response`);
+  }
+  try {
+    return JSON.parse(text) as Record<string, unknown>;
+  } catch {
+    throw new Error(`POST ${url} returned invalid JSON: ${text.slice(0, 500)}`);
+  }
 }
 
 function extractText(response: Record<string, unknown>): string {
@@ -92,8 +100,15 @@ type Outcome = {
 };
 
 export async function POST(req: NextRequest) {
+  let body: { concern?: string };
   try {
-    const { concern } = (await req.json()) as { concern?: string };
+    body = (await req.json()) as { concern?: string };
+  } catch {
+    return NextResponse.json({ error: 'Request body must be valid JSON' }, { status: 400 });
+  }
+
+  try {
+    const { concern } = body;
     if (!concern?.trim()) {
       return NextResponse.json({ error: 'concern is required' }, { status: 400 });
     }
@@ -109,7 +124,16 @@ export async function POST(req: NextRequest) {
 
     const raw = extractText(response);
     const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-    const parsed = JSON.parse(cleaned) as { outcomes: Outcome[] };
+    if (!cleaned) {
+      throw new Error('The Foundry agent returned no JSON output');
+    }
+
+    let parsed: { outcomes: Outcome[] };
+    try {
+      parsed = JSON.parse(cleaned) as { outcomes: Outcome[] };
+    } catch {
+      throw new Error(`The Foundry agent returned invalid JSON: ${cleaned.slice(0, 500)}`);
+    }
 
     // Fetch NHS article content in parallel for web outcomes on www.nhs.uk
     const outcomes = await Promise.all(
