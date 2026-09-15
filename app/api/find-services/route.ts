@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const ENDPOINT = 'https://nhsuk-ai-ap2-uks-resource.services.ai.azure.com/api/projects/nhsuk-ai-ap2-uks';
 const API_KEY = process.env.AZURE_AI_API_KEY!;
 const AGENT_NAME = 'nhsuk-service-finder';
-const AGENT_VERSION = '8';
+const AGENT_VERSION = '11';
 const BASE = `${ENDPOINT}/openai/v1`;
 const AGENT_HEADERS = { 'Content-Type': 'application/json', 'api-key': API_KEY };
 const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
@@ -62,7 +62,13 @@ async function postAgent(path: string, body: unknown) {
     const text = await res.text().catch(() => '(no body)');
     throw new Error(`POST ${url} → ${res.status}: ${text}`);
   }
-  return res.json() as Promise<Record<string, unknown>>;
+  const text = await res.text();
+  if (!text.trim()) throw new Error(`POST ${url} returned an empty response`);
+  try {
+    return JSON.parse(text) as Record<string, unknown>;
+  } catch {
+    throw new Error(`POST ${url} returned invalid JSON: ${text.slice(0, 500)}`);
+  }
 }
 
 function extractAgentText(response: Record<string, unknown>): string {
@@ -88,15 +94,46 @@ async function callAgentForSearch(service: string, postcode: string): Promise<Ag
   const conversation = await postAgent('/conversations', {
     items: [{ type: 'message', role: 'user', content: JSON.stringify({ service, postcode }) }],
   });
-  const response = await postAgent('/responses', {
-    conversation: (conversation as { id: string }).id,
-    agent_reference: { name: AGENT_NAME, version: AGENT_VERSION, type: 'agent_reference' },
+  const conversationId = (conversation as { id: string }).id;
+  const agentReference = { name: AGENT_NAME, version: AGENT_VERSION, type: 'agent_reference' };
+  let response = await postAgent('/responses', {
+    conversation: conversationId,
+    agent_reference: agentReference,
   });
-  const raw = extractAgentText(response)
-    .replace(/^```(?:json)?\s*/i, '')
-    .replace(/\s*```\s*$/, '')
-    .trim();
-  return JSON.parse(raw) as AgentResponse;
+
+  // MCP-enabled agents can pause for approval, execute the approved tool, and
+  // require one more response turn before producing their final JSON.
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const raw = extractAgentText(response)
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```\s*$/, '')
+      .trim();
+    if (raw) {
+      try {
+        return JSON.parse(raw) as AgentResponse;
+      } catch {
+        throw new Error(`The service-finder agent returned invalid JSON: ${raw.slice(0, 500)}`);
+      }
+    }
+
+    type ApprovalRequest = { type: string; id?: string };
+    const requests = (response.output as ApprovalRequest[] | undefined) ?? [];
+    const approvals = requests
+      .filter((item) => item.type === 'mcp_approval_request' && item.id)
+      .map((item) => ({
+        type: 'mcp_approval_response',
+        approval_request_id: item.id,
+        approve: true,
+      }));
+
+    response = await postAgent('/responses', {
+      conversation: conversationId,
+      ...(approvals.length ? { input: approvals } : {}),
+      agent_reference: agentReference,
+    });
+  }
+
+  throw new Error('The service-finder agent returned no JSON output after MCP tool execution');
 }
 
 export type ServiceResult = {
