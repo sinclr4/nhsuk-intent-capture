@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { PROFILE_COOKIE, readProfile } from '@/lib/profile-store';
 
 const ENDPOINT = process.env.AZURE_AI_ENDPOINT!;
 const API_KEY = process.env.AZURE_AI_API_KEY!;
@@ -113,8 +115,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'concern is required' }, { status: 400 });
     }
 
+    const demoId = (await cookies()).get(PROFILE_COOKIE)?.value;
+    const profile = demoId ? await readProfile(demoId) : null;
+    const message = profile
+      ? `The user's AI profile is:\nName: ${profile.name}\nDate of birth: ${profile.dateOfBirth}\nHome postcode: ${profile.homePostcode}\n\nUser's question:\n${concern.trim()}`
+      : concern.trim();
+
     const conversation = await post('/conversations', {
-      items: [{ type: 'message', role: 'user', content: concern.trim() }],
+      items: [{ type: 'message', role: 'user', content: message }],
     });
 
     const response = await post('/responses', {

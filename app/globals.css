@@ -258,6 +258,35 @@ body {
   margin: 0;
 }
 
+/* AI profile */
+.nhs-profile-list {
+  background: #fff;
+  border-top: 1px solid #d8dde0;
+  margin: 24px 0;
+}
+
+.nhs-profile-list > div {
+  border-bottom: 1px solid #d8dde0;
+  padding: 16px;
+}
+
+.nhs-profile-list dt {
+  color: #4c6272;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nhs-profile-list dd {
+  color: #212b32;
+  margin-top: 4px;
+}
+
+.nhs-success-msg {
+  color: #007f3b;
+  font-weight: 700;
+  margin: 16px 0;
+}
+
 .nhsapp-editorial-chevron {
   display: inline-flex;
   align-items: center;
