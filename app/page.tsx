@@ -27,7 +27,14 @@ function ChevronRight() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ profile?: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const showProfile = params.profile === 'true';
+
   return (
     <>
       <header className="app-hdr">
@@ -68,17 +75,19 @@ export default function HomePage() {
           </span>
         </Link>
 
-        <Link href="/my-ai-profile" className="nhsapp-editorial-card">
-          <div className="nhsapp-editorial-body">
-            <p className="nhsapp-editorial-title">My AI Profile</p>
-            <p className="nhsapp-editorial-copy">
-              Add details that can help our AI tools tailor information for you.
-            </p>
-          </div>
-          <span className="nhsapp-editorial-chevron" aria-hidden="true">
-            <ChevronRight />
-          </span>
-        </Link>
+        {showProfile && (
+          <Link href="/my-ai-profile" className="nhsapp-editorial-card">
+            <div className="nhsapp-editorial-body">
+              <p className="nhsapp-editorial-title">My AI Profile</p>
+              <p className="nhsapp-editorial-copy">
+                Add details that can help our AI tools tailor information for you.
+              </p>
+            </div>
+            <span className="nhsapp-editorial-chevron" aria-hidden="true">
+              <ChevronRight />
+            </span>
+          </Link>
+        )}
 
         <h2 className="nhsapp-section-heading">NHS information and support</h2>
 

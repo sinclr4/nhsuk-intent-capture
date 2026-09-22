@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 type ServiceResult = {
@@ -208,6 +208,19 @@ export default function FindServicesPage() {
   const [matchedService, setMatchedService] = useState('');
   const [errors, setErrors] = useState<{ service?: string; location?: string }>({});
   const [apiError, setApiError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/profile')
+      .then(async (res) => {
+        if (!res.ok) return null;
+        const json = await res.json() as { profile?: { homePostcode?: string } | null };
+        return json.profile?.homePostcode ?? null;
+      })
+      .then((homePostcode) => {
+        if (homePostcode) setLocation((current) => current || homePostcode);
+      })
+      .catch(() => undefined);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
