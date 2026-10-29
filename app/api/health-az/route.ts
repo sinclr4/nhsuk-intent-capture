@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
+import { MCP_URL, mcpHeaders } from '@/lib/mcp';
 
 type NhsResult = { title?: string; markdown?: string; content?: string; body?: string; url?: string };
 
@@ -8,7 +7,7 @@ async function callMcp(args: Record<string, unknown>): Promise<NhsResult[] | nul
   try {
     const res = await fetch(MCP_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+      headers: mcpHeaders(),
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,

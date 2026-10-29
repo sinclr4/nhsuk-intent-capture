@@ -27,14 +27,7 @@ function ChevronRight() {
   );
 }
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ profile?: string | string[] | undefined }>;
-}) {
-  const params = await searchParams;
-  const showProfile = params.profile === 'true';
-
+export default function HomePage() {
   return (
     <>
       <header className="app-hdr">
@@ -75,20 +68,6 @@ export default async function HomePage({
           </span>
         </Link>
 
-        {showProfile && (
-          <Link href="/my-ai-profile" className="nhsapp-editorial-card">
-            <div className="nhsapp-editorial-body">
-              <p className="nhsapp-editorial-title">My AI Profile</p>
-              <p className="nhsapp-editorial-copy">
-                Add details that can help our AI tools tailor information for you.
-              </p>
-            </div>
-            <span className="nhsapp-editorial-chevron" aria-hidden="true">
-              <ChevronRight />
-            </span>
-          </Link>
-        )}
-
         <h2 className="nhsapp-section-heading">NHS information and support</h2>
 
         <ul className="nhsapp-cards nhsapp-cards--stacked">
@@ -121,12 +100,6 @@ export default async function HomePage({
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
           </svg>
           <span className="nhs-bottom-nav__label">Messages</span>
-        </a>
-        <a href="#" className="nhs-bottom-nav__item">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-          <span className="nhs-bottom-nav__label">Profile</span>
         </a>
       </nav>
     </>

@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { PROFILE_COOKIE, readProfile } from '@/lib/profile-store';
+import { DefaultAzureCredential } from '@azure/identity';
+import { MCP_URL, mcpHeaders } from '@/lib/mcp';
 
 const ENDPOINT = process.env.AZURE_AI_ENDPOINT!;
-const API_KEY = process.env.AZURE_AI_API_KEY!;
-const AGENT_NAME = 'intent-capture';
-const AGENT_VERSION = '5';
+const AGENT_NAME = 'intent-capture-new';
+const AGENT_VERSION = '9';
 const BASE = `${ENDPOINT}/openai/v1`;
-const HEADERS = { 'Content-Type': 'application/json', 'api-key': API_KEY };
-const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
+const credential = new DefaultAzureCredential();
 
 async function post(path: string, body: unknown) {
   const url = `${BASE}${path}`;
-  const res = await fetch(url, { method: 'POST', headers: HEADERS, body: JSON.stringify(body) });
+  const token = await credential.getToken('https://ai.azure.com/.default');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token.token}` },
+    body: JSON.stringify(body),
+  });
   if (!res.ok) {
     const text = await res.text().catch(() => '(no body)');
     throw new Error(`POST ${url} → ${res.status}: ${text}`);
@@ -54,7 +57,7 @@ async function fetchNhsContent(path: string): Promise<string | null> {
   try {
     const res = await fetch(MCP_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+      headers: mcpHeaders(),
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,
@@ -115,14 +118,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'concern is required' }, { status: 400 });
     }
 
-    const demoId = (await cookies()).get(PROFILE_COOKIE)?.value;
-    const profile = demoId ? await readProfile(demoId) : null;
-    const message = profile
-      ? `The user's AI profile is:\nName: ${profile.name}\nDate of birth: ${profile.dateOfBirth}\nHome postcode: ${profile.homePostcode}\n\nUser's question:\n${concern.trim()}`
-      : concern.trim();
-
     const conversation = await post('/conversations', {
-      items: [{ type: 'message', role: 'user', content: message }],
+      items: [{ type: 'message', role: 'user', content: concern.trim() }],
     });
 
     const response = await post('/responses', {

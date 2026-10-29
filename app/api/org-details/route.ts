@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
+import { MCP_URL, mcpHeaders } from '@/lib/mcp';
 
 async function callMcp(toolName: string, args: Record<string, unknown>): Promise<string | null> {
   const res = await fetch(MCP_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+    headers: mcpHeaders(),
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: toolName, arguments: args } }),
   });
   if (!res.ok) throw new Error(`MCP ${toolName} → ${res.status}`);

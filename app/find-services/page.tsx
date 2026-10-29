@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 
 type ServiceResult = {
@@ -61,12 +61,6 @@ function BottomNav() {
           <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
         </svg>
         <span className="nhs-bottom-nav__label">Messages</span>
-      </a>
-      <a href="#" className="nhs-bottom-nav__item">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-        </svg>
-        <span className="nhs-bottom-nav__label">Profile</span>
       </a>
     </nav>
   );
@@ -208,19 +202,6 @@ export default function FindServicesPage() {
   const [matchedService, setMatchedService] = useState('');
   const [errors, setErrors] = useState<{ service?: string; location?: string }>({});
   const [apiError, setApiError] = useState('');
-
-  useEffect(() => {
-    fetch('/api/profile')
-      .then(async (res) => {
-        if (!res.ok) return null;
-        const json = await res.json() as { profile?: { homePostcode?: string } | null };
-        return json.profile?.homePostcode ?? null;
-      })
-      .then((homePostcode) => {
-        if (homePostcode) setLocation((current) => current || homePostcode);
-      })
-      .catch(() => undefined);
-  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

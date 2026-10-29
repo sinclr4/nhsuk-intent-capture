@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { MCP_URL, mcpHeaders } from '@/lib/mcp';
 
 const ENDPOINT = 'https://nhsuk-ai-ap2-uks-resource.services.ai.azure.com/api/projects/nhsuk-ai-ap2-uks';
 const API_KEY = process.env.AZURE_AI_API_KEY!;
@@ -6,7 +7,6 @@ const AGENT_NAME = 'nhsuk-service-finder';
 const AGENT_VERSION = '11';
 const BASE = `${ENDPOINT}/openai/v1`;
 const AGENT_HEADERS = { 'Content-Type': 'application/json', 'api-key': API_KEY };
-const MCP_URL = 'https://nhsuk-mcp-feat-app-uks.azurewebsites.net/mcp';
 const POSTCODE_RE = /[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}/i;
 
 // ── MCP helpers ──────────────────────────────────────────────────────────────
@@ -14,7 +14,7 @@ const POSTCODE_RE = /[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}/i;
 async function callMcp(toolName: string, args: Record<string, unknown> = {}): Promise<string | null> {
   const res = await fetch(MCP_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+    headers: mcpHeaders(),
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: toolName, arguments: args } }),
   });
   if (!res.ok) throw new Error(`MCP ${toolName} → ${res.status}`);
